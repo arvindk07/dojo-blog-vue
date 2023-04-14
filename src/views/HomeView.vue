@@ -1,41 +1,28 @@
 <template>
   <div class="home">
-    <h2>Refa</h2>
-    <p>
-      My name is {{ enngineerBabu.name }} and my age is {{ enngineerBabu.age }}
-    </p>
-    <button @click="updateEngineerBabu">Update Engineer Babu</button>
-    <h2>Reactive</h2>
-    <p>
-      My name is {{ enngineerBabuReactive.name }} and my age is
-      {{ enngineerBabuReactive.age }}
-    </p>
-    <button @click="updateReactive">Update Engineer Babu Reactive</button>
+    <h1>Home</h1>
+    <input type="text" v-model="search" />
+    <p>search term - {{ search }}</p>
+    <div v-for="name in matchingNames" :key="name">{{ name }}</div>
   </div>
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { ref, computed } from "vue";
 export default {
   name: "HomeView",
   setup() {
-    // const p = ref(null);
+    const search = ref("");
+    const names = ref(["dev", "traversy", "kyle", "Brad", "roadside coder"]);
 
-    const enngineerBabu = ref({ name: "Mario", age: 30 });
-    const enngineerBabuReactive = reactive({ name: "Dev", age: 35 });
-
-    const updateEngineerBabu = () => {
-      enngineerBabu.value.age = 26;
-    };
-    const updateReactive = () => {
-      enngineerBabuReactive.age = 25;
-    };
+    const matchingNames = computed(() => {
+      return names.value.filter((name) => name.includes(search.value));
+    });
 
     return {
-      enngineerBabu,
-      updateEngineerBabu,
-      enngineerBabuReactive,
-      updateReactive,
+      names,
+      search,
+      matchingNames,
     };
   },
 };
