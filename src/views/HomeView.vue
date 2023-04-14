@@ -4,6 +4,7 @@
     <input type="text" v-model="search" />
     <p>search term - {{ search }}</p>
     <div v-for="name in matchingNames" :key="name">{{ name }}</div>
+    <button @click="handleClick">Stop Watching</button>
   </div>
 </template>
 
@@ -15,11 +16,11 @@ export default {
     const search = ref("");
     const names = ref(["dev", "traversy", "kyle", "Brad", "roadside coder"]);
 
-    watch(search, () => {
+    const stopWatch = watch(search, () => {
       console.log("watch");
     });
 
-    watchEffect(() => {
+    const stopWatchEffect = watchEffect(() => {
       console.log("watch effect", search.value);
     });
 
@@ -27,10 +28,16 @@ export default {
       return names.value.filter((name) => name.includes(search.value));
     });
 
+    const handleClick = () => {
+      stopWatch();
+      stopWatchEffect();
+    };
+
     return {
       names,
       search,
       matchingNames,
+      handleClick,
     };
   },
 };
