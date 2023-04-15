@@ -1,9 +1,11 @@
 <template>
   <div class="home">
     <h1>Home</h1>
-    <PostList v-if="showPosts" :posts="posts" />
-    <button @click="showPosts = !showPosts">Toggle Post</button>
-    <button @click="posts.pop()">Delete Post</button>
+    <div v-if="error">{{ error }}</div>
+    <div v-if="posts.length">
+      <PostList :posts="posts" />
+    </div>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
@@ -16,13 +18,25 @@ export default {
     PostList,
   },
   setup() {
-    const posts = ref([
-      { title: "Welcome to the blog", body: "lorem ipsum", id: 1 },
-      { title: "Top 5 css", body: "lorem ipsum", id: 2 },
-    ]);
-    const showPosts = ref(true);
+    const posts = ref([]);
+    const error = ref(null);
 
-    return { posts, showPosts };
+    const load = async () => {
+      try {
+        let data = await fetch("http://localhost:3000/posts");
+        if (!data.ok) {
+          throw Error("no data availavle");
+        }
+        posts.value = await data.json();
+      } catch (err) {
+        error.value = err.message;
+        console.log(error.value);
+      }
+    };
+
+    load();
+
+    return { posts, error };
   },
 };
 </script>
